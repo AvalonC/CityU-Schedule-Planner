@@ -4,8 +4,8 @@ const tabBar = new mdc.tabBar.MDCTabBar(document.querySelector(".mdc-tab-bar")),
     snackbar = new mdc.snackbar.MDCSnackbar(document.querySelector('.mdc-snackbar')),
     s_autofill = new mdc.switchControl.MDCSwitch(document.querySelector('#autofill-switch-container')),
     d_details = new mdc.dialog.MDCDialog(document.querySelector("#section-details-dialog")),
-    START_DATE = "2021-07-27 08:30:00",
-    END_DATE = "2021-09-06 23:30:00",
+    START_DATE = "2024-01-01 08:30:00",
+    END_DATE = "2024-01-31 23:30:00",
     DAYS = ["", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
 snackbar.timeoutMs = 4000;
