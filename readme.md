@@ -1,8 +1,8 @@
-# CityU Timetable Checker
+# CityU-Schedule-Planner (former CityU Timetable Checker)
 
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/lee011/timetable-checker)
-![GitHub last commit](https://img.shields.io/github/last-commit/lee011/timetable-checker)
-![GitHub Release Date](https://img.shields.io/github/release-date/lee011/timetable-checker)
+![GitHub last commit](https://img.shields.io/github/last-commit/AvalonC/CityU-Schedule-Planner)
+![GitHub Release Date](https://img.shields.io/github/release-date/AvalonC/CityU-Schedule-Planner)
 
 
 Timetable checker for CityU mates. It reads class information from AIMS and match against your timetable to see if time conflits with sessions occurs.

@@ -9,6 +9,7 @@
 - reboot the project.
 - update the extension to meet Chrome manifest V3 standard.
 - fixed bugs
+- remove the new function implemented in 0.3.1 due to security reason.
 
 ## Version 0.3.1 (Released on 27/08/2021)
 
