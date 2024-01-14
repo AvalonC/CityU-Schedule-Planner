@@ -2,26 +2,8 @@
     "content_scripts": [
         {
             "js": [
-                "js/jquery.min.js"
-            ],
-            "matches": [
-                "https://banweb.cityu.edu.hk/*"
-            ],
-            "run_at": "document_end",
-            "all_frames": true
-        },
-        {
-            "js": [
-                "js/moment.min.js"
-            ],
-            "matches": [
-                "https://banweb.cityu.edu.hk/*"
-            ],
-            "run_at": "document_end",
-            "all_frames": true
-        },
-        {
-            "js": [
+                "js/jquery.min.js",
+                "js/moment.min.js",
                 "js/read.js"
             ],
             "matches": [
@@ -32,24 +14,25 @@
         }
     ],
     "background": {
-        "scripts": [
-            "js/bg.js"
-        ]
+        "service_worker": "js/bg.js"
     },
-    "browser_action": {
+    "action": {
         "default_icon": {
             "24": "img/baseline_schedule_white_24dp.png"
         },
         "default_popup": "popup.html"
     },
-    "icons": { "128": "img/icon.png" },
+    "icons": {
+        "128": "img/icon.png"
+    },
     "description": "Timetable checker for CityU mates.",
-    "manifest_version": 2,
-    "name": "CityU Timetable Checker",
+    "manifest_version": 3,
+    "name": "CityU Schedule Planner",
     "permissions": [
-        "https://banweb.cityu.edu.hk/*",
-        "storage",
-        "contextMenus"
+        "storage"
     ],
-    "version": "0.3.1"
+    "host_permissions": [
+        "https://banweb.cityu.edu.hk/*"
+    ],
+    "version": "0.1"
 }

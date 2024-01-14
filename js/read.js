@@ -7,6 +7,7 @@ const DAYS = " MTWRFS", FULL_REGEX = /.*f.*u.*l.*l.*/i, NUM_FILTER = /[^\d]/g,
         "Yeung Kin Man Acad Building": "YEUNG",
         "Mong Man Wai Building": "MMW"
     };
+    
 
 let inAddDropPeriod = moment().isBetween(START_DATE, END_DATE, undefined, "[]");
 /* 
@@ -66,6 +67,11 @@ if (location.href === "https://banweb.cityu.edu.hk/pls/PROD/bwskfshd.P_CrseSchdD
 } else if (location.href.startsWith("https://banweb.cityu.edu.hk/pls/PROD/hwscrssh_cityu.P_DispOneSection")) {
     //自本地存储中取得ttb和wishlist
     chrome.storage.local.get(["ttb", "wishlist"], ({ ttb, wishlist }) => {
+        //如果用户尚未有wishlist
+        if (wishlist == null) {
+            //新建一个
+            wishlist = [];
+        }
         let ctd$;
         let params = new URLSearchParams(location.search);
         //学期判断
@@ -332,24 +338,25 @@ if (location.href === "https://banweb.cityu.edu.hk/pls/PROD/bwskfshd.P_CrseSchdD
             });
         }
     });
-} else if (location.href === "https://banweb.cityu.edu.hk/pls/PROD/twgkutil_cityu.P_Search") {
-    //用jQuery构建一个判断是否有Master Class Schedule功能的变量
-    let a$ = $("a:contains('Master Class Schedule')");
-    //自动点击
-    a$.get(a$.length - 1).click();
+// } else if (location.href === "https://banweb.cityu.edu.hk/pls/PROD/twgkutil_cityu.P_Search") {
+//     //用jQuery构建一个判断是否有Master Class Schedule功能的变量
+//     let a$ = $("a:contains('Master Class Schedule')");
+//     //自动点击
+//     a$.get(a$.length - 1).click();
+// }
 }
-//监听chromium运行时
-chrome.runtime.onMessage.addListener((m, s, r) => {
-    //控制台记录
-    console.log("on message", m);
-    //如果消息记录为mcs
-    if (m.action === "mcs") {
-        //选择关键词为Master Class Schedule
-        document.querySelector("#keyword_in_id").value = "Master Class Schedule";
-        //提交表单
-        document.forms.cityu_search.submit();
-    }
-});
+// //监听chromium运行时
+// chrome.runtime.onMessage.addListener((m, s, r) => {
+//     //控制台记录
+//     console.log("on message", m);
+//     //如果消息记录为mcs
+//     if (m.action === "mcs") {
+//         //选择关键词为Master Class Schedule
+//         document.querySelector("#keyword_in_id").value = "Master Class Schedule";
+//         //提交表单
+//         document.forms.cityu_search.submit();
+//     }
+// });
 
 function preview() {
     let params = new URLSearchParams(location.search);

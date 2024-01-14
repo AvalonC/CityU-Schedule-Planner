@@ -2,6 +2,14 @@
 
 &copy; 2020-2021 Kelvin Lee. All rights reserved.
 
+&copy; 2024 Guanzhang WANG. All rights reserved.
+
+## Version 0.1 (Released on 14/01/2024)
+
+- reboot the project.
+- update the extension to meet Chrome manifest V3 standard.
+- fixed bugs
+
 ## Version 0.3.1 (Released on 27/08/2021)
 
 **New functions:**
