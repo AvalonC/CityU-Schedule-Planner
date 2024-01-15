@@ -1,6 +1,6 @@
 # CityU-Schedule-Planner (former CityU Timetable Checker)
 
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/lee011/timetable-checker)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/AvalonC/CityU-Schedule-Planner)
 ![GitHub last commit](https://img.shields.io/github/last-commit/AvalonC/CityU-Schedule-Planner)
 ![GitHub Release Date](https://img.shields.io/github/release-date/AvalonC/CityU-Schedule-Planner)
 
