@@ -4,6 +4,8 @@
 ![GitHub last commit](https://img.shields.io/github/last-commit/AvalonC/CityU-Schedule-Planner)
 ![GitHub Release Date](https://img.shields.io/github/release-date/AvalonC/CityU-Schedule-Planner)
 
+[English](README.md)
+
 此插件能够从CityU [AIMS](https://banweb.cityu.edu.hk)读取学生已有课程信息，并在原有的Master Class Schedule功能上进行强化
 
 **这一插件仅供香港城市大学（CityU）学生使用，并仅在访问AIMS时生效。为防止增加与大学相关的不必要纠纷，此软件不会上架Chrome Store等各类插件商店。**
