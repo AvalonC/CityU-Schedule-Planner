@@ -7,7 +7,7 @@ const DAYS = " MTWRFS", FULL_REGEX = /.*f.*u.*l.*l.*/i, NUM_FILTER = /[^\d]/g,
         "Yeung Kin Man Acad Building": "YEUNG",
         "Mong Man Wai Building": "MMW"
     };
-    
+
 
 let inAddDropPeriod = moment().isBetween(START_DATE, END_DATE, undefined, "[]");
 /* 
@@ -15,10 +15,21 @@ let inAddDropPeriod = moment().isBetween(START_DATE, END_DATE, undefined, "[]");
 1.当前页面是否是学期规划详情页？（加载全部已选课程数据用以后续操作，因此这个操作应该最先进行。）
 2.当前页面是否是某门具体的课程？
 3.当前页面是否是CRN输入页面？
-4。当前页面是否是AIMS搜索页？
 */
-    //加载学期课程清单
+//学期规划详情页
 if (location.href === "https://banweb.cityu.edu.hk/pls/PROD/bwskfshd.P_CrseSchdDetl") {
+    readStudentSchedule();
+}
+//具体课程详情页
+else if (location.href.startsWith("https://banweb.cityu.edu.hk/pls/PROD/hwscrssh_cityu.P_DispOneSection")) {
+    modifiedSectionPage();
+}
+//选课页面
+else if (location.href === "https://banweb.cityu.edu.hk/pls/PROD/bwskfreg.P_AltPin") {
+    autoFillCRN();
+}
+
+function readStudentSchedule() {
     //创建课程列表
     let classes = [];
     //创建元数据列表
@@ -64,7 +75,9 @@ if (location.href === "https://banweb.cityu.edu.hk/pls/PROD/bwskfshd.P_CrseSchdD
     chrome.storage.local.set({ ttb: { meta, classes } }, () => {
         console.log("Saved timetable data", { meta, classes });
     });
-} else if (location.href.startsWith("https://banweb.cityu.edu.hk/pls/PROD/hwscrssh_cityu.P_DispOneSection")) {
+}
+
+function modifiedSectionPage() {
     //自本地存储中取得ttb和wishlist
     chrome.storage.local.get(["ttb", "wishlist"], ({ ttb, wishlist }) => {
         //如果用户尚未有wishlist
@@ -96,7 +109,8 @@ if (location.href === "https://banweb.cityu.edu.hk/pls/PROD/bwskfshd.P_CrseSchdD
                 if (inAddDropPeriod)
                     th2$.attr("colspan", "2");
                 $(v).append([th1$, th2$]);
-            } else {
+            }
+            else {
                 //不在的时候进行一系列判断，为此先行准备一系列变量
                 let flag = true;
                 let crash = null;
@@ -139,7 +153,8 @@ if (location.href === "https://banweb.cityu.edu.hk/pls/PROD/bwskfshd.P_CrseSchdD
                         //显示此课程已经被注册
                         td1$.css("color", "red").text(`Course registered`);
                         //开始判断其他情况
-                    } else {
+                    }
+                    else {
                         //最大容量已满
                         if (FULL_REGEX.test(ctd$.children().eq(6).text())) {
                             //waitlist已满
@@ -217,9 +232,9 @@ if (location.href === "https://banweb.cityu.edu.hk/pls/PROD/bwskfshd.P_CrseSchdD
                                     }
                                 }
                             }
-                        //最大容量未满
+                            //最大容量未满
                         } else {
-                           //不存在上课时间
+                            //不存在上课时间
                             if ($(v).children().eq(11).text().trim() === "") {
                                 //显示可注册
                                 td1$.css("color", "green").text("Registrable");
@@ -272,7 +287,7 @@ if (location.href === "https://banweb.cityu.edu.hk/pls/PROD/bwskfshd.P_CrseSchdD
                                     if ($(v).children().eq(11).text().trim() !== "" && selected === current) {
                                         td3$.append($("<a></a>").text("Preview").attr("href", "#").click(preview));
                                     }
-                                //如果flag为false
+                                    //如果flag为false
                                 } else {
                                     //显示冲突课程
                                     td1$.css("color", "red").text(`Conflicts with ${crash}`);
@@ -288,7 +303,7 @@ if (location.href === "https://banweb.cityu.edu.hk/pls/PROD/bwskfshd.P_CrseSchdD
                             }
                         }
                     }
-                //如果背景不是网选粉，那么如果此行有16个子元素的话
+                    //如果背景不是网选粉，那么如果此行有16个子元素的话
                 } else if ($(v).children().length === 16) {
                     //如果有容量
                     if ($(v).children().eq(6).text().trim() !== "") {
@@ -325,59 +340,6 @@ if (location.href === "https://banweb.cityu.edu.hk/pls/PROD/bwskfshd.P_CrseSchdD
         //存储wishlist
         chrome.storage.local.set({ wishlist: wishlist });
     });
-} else if (location.href === "https://banweb.cityu.edu.hk/pls/PROD/bwskfreg.P_AltPin") {
-    //确认wishlist和autofill功能是否启动
-    chrome.storage.local.get(["wishlist", "autofill"], ({ wishlist, autofill }) => {
-        //如果启动autofill
-        if (autofill) {
-            //筛选出状态为null，或者状态为可网选且状态处于等待列表或剩余容量大于0的CRN，组成一个队列
-            wishlist.filter(({ status }) => status == null || (status.webenabled && (status.waitlist || status.avail > 0))).map(v => v.crn).forEach((v, i) => {
-                //在不到10个的前提下，将CRN依次填入表格
-                if (i < 10)
-                    document.querySelectorAll("input[name='CRN_IN'][id]")[i].value = v;
-            });
-        }
-    });
-// } else if (location.href === "https://banweb.cityu.edu.hk/pls/PROD/twgkutil_cityu.P_Search") {
-//     //用jQuery构建一个判断是否有Master Class Schedule功能的变量
-//     let a$ = $("a:contains('Master Class Schedule')");
-//     //自动点击
-//     a$.get(a$.length - 1).click();
-// }
-}
-// //监听chromium运行时
-// chrome.runtime.onMessage.addListener((m, s, r) => {
-//     //控制台记录
-//     console.log("on message", m);
-//     //如果消息记录为mcs
-//     if (m.action === "mcs") {
-//         //选择关键词为Master Class Schedule
-//         document.querySelector("#keyword_in_id").value = "Master Class Schedule";
-//         //提交表单
-//         document.forms.cityu_search.submit();
-//     }
-// });
-
-function preview() {
-    let params = new URLSearchParams(location.search);
-    let td$ = $(this).parents("tr");
-    let ctd$ = td$;
-    while (ctd$.children().eq(0).text().trim() === "") {
-        ctd$ = ctd$.prev();
-    }
-    chrome.runtime.sendMessage({
-        type: "preview",
-        data: {
-            course: `${params.get("subj")}${params.get("crse")}`,
-            crn: parseInt(ctd$.children().eq(0).text()),
-            day: DAYS.indexOf(td$.children().eq(10).text()),
-            time: td$.children().eq(11).text().split(" - "),
-            section: ctd$.children().eq(1).text(),
-            instruct: ctd$.children().eq(14).text(),
-            loc: `${ctd$.children().eq(12).text()} ${ctd$.children().eq(13).text()}`
-        }
-    });
-    return false;
 }
 
 function addCRNToWishlist() {
@@ -431,6 +393,43 @@ function addCRNToWishlist() {
             let f$ = $("<div></div>").css({ "font-size": "18px", "padding": "8px", "position": "fixed", "top": "20px", "right": "20px", "background-color": "white", "border": "5px solid black" }).text("CRN added to wishlist").appendTo(document.body);
             setTimeout(() => f$.remove(), 5000);
         });
+    });
+    return false;
+}
+
+function autoFillCRN() {
+    //确认wishlist和autofill功能是否启动
+    chrome.storage.local.get(["wishlist", "autofill"], ({ wishlist, autofill }) => {
+        //如果启动autofill
+        if (autofill) {
+            //筛选出状态为null，或者状态为可网选且状态处于等待列表或剩余容量大于0的CRN，组成一个队列
+            wishlist.filter(({ status }) => status == null || (status.webenabled && (status.waitlist || status.avail > 0))).map(v => v.crn).forEach((v, i) => {
+                //在不到10个的前提下，将CRN依次填入表格
+                if (i < 10)
+                    document.querySelectorAll("input[name='CRN_IN'][id]")[i].value = v;
+            });
+        }
+    });
+}
+
+function preview() {
+    let params = new URLSearchParams(location.search);
+    let td$ = $(this).parents("tr");
+    let ctd$ = td$;
+    while (ctd$.children().eq(0).text().trim() === "") {
+        ctd$ = ctd$.prev();
+    }
+    chrome.runtime.sendMessage({
+        type: "preview",
+        data: {
+            course: `${params.get("subj")}${params.get("crse")}`,
+            crn: parseInt(ctd$.children().eq(0).text()),
+            day: DAYS.indexOf(td$.children().eq(10).text()),
+            time: td$.children().eq(11).text().split(" - "),
+            section: ctd$.children().eq(1).text(),
+            instruct: ctd$.children().eq(14).text(),
+            loc: `${ctd$.children().eq(12).text()} ${ctd$.children().eq(13).text()}`
+        }
     });
     return false;
 }
