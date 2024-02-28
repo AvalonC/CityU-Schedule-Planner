@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Timetable Preview</title>
+    <script src="js/jquery.min.js"></script>
+    <script src="js/moment.min.js"></script>
+    <script src="js/material-components-web.js"></script>
+    <script src="js/html2canvas.js"></script>
+    <script src="js/FileSaver.js"></script>
+    <link rel="stylesheet" href="fonts/inter.css" />
+    <link rel="stylesheet" href="css/popup.css" />
+    <style>
+        @font-face {
+            font-family: 'Material Icons';
+            font-style: normal;
+            font-weight: 400;
+            src: local('Material Icons'),
+                url('fonts/MaterialIcons-Regular.ttf') format('truetype');
+        }
+
+        body {
+            font-family: Inter;
+            min-width: 750px;
+            min-height: 599px;
+            font-size: 16px;
+            margin: 0;
+            user-select: none;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        .timetable {
+            display: grid;
+            grid-template-areas: ". week" "time content";
+            grid-template-columns: 60px;
+            grid-template-rows: 30px;
+            right: 0;
+        }
+
+        .timetable .weekend {
+            background: #fbfbfc;
+            color: #87a1ad;
+        }
+
+        .timetable .week-names {
+            grid-area: week;
+            display: grid;
+            grid-template-columns: repeat(5, 4fr) repeat(2, 3fr);
+            text-transform: uppercase;
+            font-size: 12px;
+        }
+
+        .timetable .week-names>div {
+            display: -webkit-box;
+            display: flex;
+            -webkit-box-align: center;
+            align-items: center;
+            -webkit-box-pack: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            padding: 4px;
+            box-shadow: inset 1px 0 0 #ECEFF1;
+        }
+
+        .timetable .time-interval {
+            grid-area: time;
+            display: grid;
+            grid-template-rows: repeat(16, 60px);
+            font-size: 14px;
+        }
+
+        .timetable .time-interval>div {
+            display: -webkit-box;
+            display: flex;
+            -webkit-box-align: start;
+            align-items: flex-start;
+            -webkit-box-pack: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            box-shadow: inset 0 1px 0 0 #ECEFF1;
+            padding: 4px;
+        }
+
+        .timetable .content {
+            grid-area: content;
+            display: grid;
+            grid-template-rows: repeat(16, 60px);
+            grid-template-columns: repeat(5, 4fr) repeat(2, 3fr);
+        }
+
+        .timetable .background {
+            grid-area: content;
+            display: grid;
+            grid-template-rows: repeat(16, 60px);
+            grid-template-columns: repeat(5, 4fr) repeat(2, 3fr);
+        }
+
+        .timetable .content>div {
+            background-color: #ffe0b2;
+            padding: 4px;
+            border-radius: 4px;
+            margin: 2px;
+            margin-bottom: 12px;
+        }
+
+        .timetable .content>div.preview {
+            background-color: rgba(178, 235, 242, 0.6);
+        }
+
+        .timetable .background>div {
+            box-shadow: inset 1px 0 0 #ECEFF1, inset 0 1px 0 0 #ECEFF1;
+        }
+
+        .mdc-data-table--table {
+            table-layout: auto;
+        }
+
+        .material-icons {
+            font-family: 'Material Icons';
+            font-weight: normal;
+            font-style: normal;
+            font-size: 24px;
+            /* Preferred icon size */
+            display: inline-block;
+            line-height: 1;
+            text-transform: none;
+            letter-spacing: normal;
+            word-wrap: normal;
+            white-space: nowrap;
+            direction: ltr;
+
+            /* Support for all WebKit browsers. */
+            -webkit-font-smoothing: antialiased;
+            /* Support for Safari and Chrome. */
+            text-rendering: optimizeLegibility;
+
+            /* Support for Firefox. */
+            -moz-osx-font-smoothing: grayscale;
+
+            /* Support for IE. */
+            font-feature-settings: 'liga';
+        }
+
+        /* 为顶部导航添加黑色背景颜色 */
+        .topnav {
+            background: linear-gradient(45deg, #BF165E 65%, #FADBE8);
+            overflow: hidden;
+            width: 100%;
+            position: fixed;
+            height: 4em;
+            top: 0;
+            display: inline-block;
+            z-index: 1;
+        }
+
+        /* 为导航栏内的链接设置样式 */
+        .topnav a {
+            float: left;
+            color: #f2f2f2;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+            font-size: 30px;
+            font-weight: bold;
+        }
+
+        /* 侧边栏菜单 */
+        .sidenav {
+            height: 100%;
+            /* 全高：如果你想要 "auto" 高度，请删除它 */
+            width: 20em;
+            /* 设置侧边栏的宽度 */
+            position: fixed;
+            /* 固定侧边栏（滚动时保持原位）*/
+            top: 0;
+            left: 0;
+            background-color: #fbfbfc;
+            /* 黑色 */
+            overflow-x: hidden;
+            /* 禁用水平滚动 */
+            padding-top: 5em;
+            overflow-x: hidden;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: auto;
+        }
+
+        /* 导航菜单链接 */
+        .sidenav title {
+            padding: 6px 8px 6px 16px;
+            text-decoration: none;
+            font-size: 25px;
+            color: #818181;
+            display: block;
+            font-weight: bold;
+        }
+
+        .sidenav a {
+            padding: 6px 8px 6px 16px;
+            text-decoration: none;
+            font-size: 15px;
+            color: #818181;
+            display: block;
+        }
+
+        .sidenav .button {
+            padding: 6px 8px 6px 16px;
+        }
+
+        .bottom {
+            height: 6em;
+            display: flex;
+            align-items: center;
+        }
+
+        .bottom .content {
+            margin-left: 1em;
+        }
+
+        .bottom .info {
+            position: absolute;
+            display: flex;
+            align-items: center;
+            right: 1%;
+        }
+
+        .printarea {
+            margin-left: 20em;
+            margin-top: 4em;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <div class="topnav" id="topnav">
+        <a>Schedule Preview</a>
+    </div>
+
+    <div class="sidenav">
+        <div class="scroll">
+            <title>Course List</title>
+            <a>Choose the course(s) that you want to keep, then click "Reschedule" to refresh the schedule.</a>
+            <a>Enrolled Course</a>
+            <ul class="mdc-list mdc-list--two-line" id="enrolled-list"></ul>
+            <template id="enrol-item-template">
+                <li class="mdc-list-item" role="checkbox" aria-checked="false">
+                    <span class="mdc-list-item__ripple"></span>
+                    <div class="mdc-form-field mdc-list-item__graphic">
+                        <div class="mdc-checkbox">
+                            <input type="checkbox" class="mdc-checkbox__native-control" />
+                            <div class="mdc-checkbox__background">
+                                <svg class="mdc-checkbox__checkmark" viewBox="0 0 24 24">
+                                    <path class="mdc-checkbox__checkmark-path" fill="none"
+                                        d="M1.73,12.91 8.1,19.28 22.79,4.59" />
+                                </svg>
+                                <div class="mdc-checkbox__mixedmark"></div>
+                            </div>
+                            <div class="mdc-checkbox__ripple"></div>
+                        </div>
+                    </div>
+                    <label class="mdc-list-item__text">
+                        <span class="mdc-list-item__primary-text"></span>
+                        <span class="mdc-list-item__secondary-text"></span>
+                    </label>
+                </li>
+            </template>
+            <div class="button">
+                <button class="mdc-button mdc-button--outlined" id="reset-button">
+                    <div class="mdc-button__ripple"></div>
+                    <i class="material-icons mdc-button__icon" aria-hidden="true">restore</i>
+                    <span class="mdc-button__label">Restore Enrolled</span>
+                </button>
+            </div>
+            <a>Wishlist Course</a>
+            <ul class="mdc-list mdc-list--two-line" id="wish-list"></ul>
+            <template id="wish-item-template">
+                <li class="mdc-list-item" role="checkbox" aria-checked="false">
+                    <span class="mdc-list-item__ripple"></span>
+                    <div class="mdc-form-field mdc-list-item__graphic">
+                        <div class="mdc-checkbox">
+                            <input type="checkbox" class="mdc-checkbox__native-control" />
+                            <div class="mdc-checkbox__background">
+                                <svg class="mdc-checkbox__checkmark" viewBox="0 0 24 24">
+                                    <path class="mdc-checkbox__checkmark-path" fill="none"
+                                        d="M1.73,12.91 8.1,19.28 22.79,4.59" />
+                                </svg>
+                                <div class="mdc-checkbox__mixedmark"></div>
+                            </div>
+                            <div class="mdc-checkbox__ripple"></div>
+                        </div>
+                    </div>
+                    <label class="mdc-list-item__text">
+                        <span class="mdc-list-item__primary-text"></span>
+                        <span class="mdc-list-item__secondary-text"></span>
+                    </label>
+                </li>
+            </template>
+            <div class="button">
+                <button class="mdc-button mdc-button--outlined" id="preview-button">
+                    <div class="mdc-button__ripple"></div>
+                    <i class="material-icons mdc-button__icon" aria-hidden="true">edit_calendar</i>
+                    <span class="mdc-button__label">Reschedule</span>
+                </button>
+            </div>
+            <div class="button">
+                <button class="mdc-button mdc-button--outlined" id="download-button">
+                    <div class="mdc-button__ripple"></div>
+                    <i class="material-icons mdc-button__icon" aria-hidden="true">cloud_download</i>
+                    <span class="mdc-button__label">Save Preview</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="no-scheduled-time"
+        style="display: none; margin: 8px; border: 1px solid orange; background-color: yellow; color: black; padding: 4px; text-align: justify; border-radius: 2px">
+        <b>Sections with no scheduled date and time:</b>
+    </div>
+
+    <div class="printarea">
+        <div class="timetable">
+            <div class="week-names">
+                <div>monday</div>
+                <div>tuesday</div>
+                <div>wednesday</div>
+                <div>thursday</div>
+                <div>friday</div>
+                <div class="weekend">saturday</div>
+                <div class="weekend">sunday</div>
+            </div>
+            <div class="time-interval">
+                <div>08:00</div>
+                <div>09:00</div>
+                <div>10:00</div>
+                <div>11:00</div>
+                <div>12:00</div>
+                <div>13:00</div>
+                <div>14:00</div>
+                <div>15:00</div>
+                <div>16:00</div>
+                <div>17:00</div>
+                <div>18:00</div>
+                <div>19:00</div>
+                <div>20:00</div>
+                <div>21:00</div>
+                <div>22:00</div>
+                <div>23:00</div>
+            </div>
+            <div class="background"></div>
+            <div class="content"></div>
+        </div>
+        <div class="bottom">
+            <img src="img/icon.png" style="height: 60%;margin-left: 2em;">
+            <div class="content">
+                <a>Generated by</a>
+                <br />
+                <a style="font-weight: bold;">Schedule Planner</a>
+            </div>
+            <div class="info">
+                <img src="img/logo.png" height="60" style="margin-left: 2em;" />
+                <div class="content">
+                    <a>Provided by</a>
+                    <br />
+                    <a style="font-weight: bold;">BIS Navigator</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="js/schedule.js"></script>
+</body>
+
+</html>

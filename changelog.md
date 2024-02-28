@@ -1,4 +1,6 @@
-# CityU Timetable Checker
+# CityU Schedule Planner 
+
+_former: CityU Timetable Checker_
 
 &copy; 2020-2021 Kelvin Lee. All rights reserved.
 

@@ -47,7 +47,7 @@
 
         .timetable {
             display: grid;
-            grid-template-areas: ". week""time content";
+            grid-template-areas: ". week" "time content";
             grid-template-columns: 60px;
             grid-template-rows: 30px;
             width: 100%;
@@ -191,21 +191,26 @@
         </div>
     </div>
     <div class="tabbed-content">
-        <div style="margin-bottom: 8px; border: 1px solid yellow; background-color: yellow; color: black; padding: 4px; text-align: justify; border-radius: 5px">
-            To update this timetable, go to Course Registration &gt; Main Menu for Web Add/Drop &gt; My Detail Schedule in <a href="https://banweb.cityu.edu.hk/" target="_blank">AIMS</a>.
+        <div
+            style="margin-bottom: 8px; border: 1px solid yellow; background-color: yellow; color: black; padding: 4px; text-align: justify; border-radius: 5px">
+            To update this timetable, go to Course Registration &gt; Main Menu for Web Add/Drop &gt; My Detail Schedule
+            in <a href="https://banweb.cityu.edu.hk/" target="_blank">AIMS</a>.
         </div>
-        <div style="margin-bottom: 8px; border: 1px solid rgb(255, 0, 98); background-color: rgb(255, 0, 98); color: whitesmoke; padding: 4px; text-align: justify; border-radius: 5px">
-            As some courses do not meet every week, you are strongly advised to observe the date range of each course before attending the classes.
+        <div
+            style="margin-bottom: 8px; border: 1px solid rgb(255, 0, 98); background-color: rgb(255, 0, 98); color: whitesmoke; padding: 4px; text-align: justify; border-radius: 5px">
+            As some courses do not meet every week, you are strongly advised to observe the date range of each course
+            before attending the classes.
         </div>
-        <div style="margin-bottom: 8px; border: 1px solid #b01861; background-color: #b01861; color: white; padding: 4px; text-align: justify; border-radius: 5px">
-            This extension is free access on BIS Navigator, if you paid for this extension, please report the seller<br>
-            这一插件可在BIS Navigator上免费获取，如果你为此插件付费，请举报卖家并申请退款。
+        <div
+            style="margin-bottom: 8px; border: 1px solid #b01861; background-color: #b01861; color: white; padding: 4px; text-align: justify; border-radius: 5px">
+            This extension is free access on BIS Navigator, if you paid for this extension, please report the seller
         </div>
-        <div id="no-scheduled-time" style="display: none; margin-bottom: 8px; border: 1px solid orange; background-color: yellow; color: black; padding: 4px; text-align: justify; border-radius: 2px">
+        <div id="no-scheduled-time"
+            style="display: none; margin-bottom: 8px; border: 1px solid orange; background-color: yellow; color: black; padding: 4px; text-align: justify; border-radius: 2px">
             <b>Sections with no scheduled date and time:</b>
         </div>
         <div style="margin-bottom: 8px" id="meta-text">
-            Timetable for 
+            Timetable for:
         </div>
         <div class="timetable">
             <div class="week-names">
@@ -240,32 +245,55 @@
         </div>
     </div>
     <div class="tabbed-content" style="display: none;">
-        <label class="mdc-text-field mdc-text-field--filled mdc-text-field--with-trailing-icon" id="add-crn" style="width: 100%;">
+        <label class="mdc-text-field mdc-text-field--filled mdc-text-field--with-trailing-icon" id="add-crn"
+            style="width: 100%;">
             <span class="mdc-text-field__ripple"></span>
             <span class="mdc-floating-label" id="add-crn-label">Enter CRN to add to your wishlist</span>
-            <input class="mdc-text-field__input" type="text" pattern="\d{5}" maxlength="5" aria-labelledby="add-crn-label" id="add-crn-input" />
-            <i class="material-icons mdc-text-field__icon mdc-text-field__icon--trailing" tabindex="0" role="button" id="add-crn-button">add</i>
+            <input class="mdc-text-field__input" type="text" pattern="\d{5}" maxlength="5"
+                aria-labelledby="add-crn-label" id="add-crn-input" />
+            <i class="material-icons mdc-text-field__icon mdc-text-field__icon--trailing" tabindex="0" role="button"
+                id="add-crn-button">add</i>
             <span class="mdc-line-ripple"></span>
         </label>
         <div class="mdc-text-field-helper-line">
-            <div class="mdc-text-field-helper-text mdc-text-field-helper-text--persistent" aria-hidden="true">You can also add CRNs to your wishlist by clicking "Add to Wishlist" link in the Master Class Schedule.</div>
+            <div class="mdc-text-field-helper-text mdc-text-field-helper-text--persistent" aria-hidden="true">You can
+                also add CRNs to your wishlist by clicking "Add to Wishlist" link in the Master Class Schedule.</div>
         </div>
         <br />
-        <div style="margin-left: 12px;" title="When this is turned on, the first 10 CRNs in the wishlist will be auto-filled into the Add Classes Worksheet in the add/drop interface.&#10;Note: This action DOES NOT AUTOMATICALLY submit the changes. You still have to click 'Submit Changes' button MANUALLY to apply changes.">
+        <div style="margin-left: 12px;"
+            title="When this is turned on, the first 10 CRNs in the wishlist will be auto-filled into the Add Classes Worksheet in the add/drop interface.&#10;Note: This action DOES NOT AUTOMATICALLY submit the changes. You still have to click 'Submit Changes' button MANUALLY to apply changes.">
             <div class="mdc-switch" id="autofill-switch-container">
                 <div class="mdc-switch__track"></div>
                 <div class="mdc-switch__thumb-underlay">
                     <div class="mdc-switch__thumb"></div>
-                    <input type="checkbox" id="autofill-switch" class="mdc-switch__native-control" role="switch" aria-checked="false">
+                    <input type="checkbox" id="autofill-switch" class="mdc-switch__native-control" role="switch"
+                        aria-checked="false">
                 </div>
             </div>
             <label for="autofill-switch" style="margin-left: 12px;">
                 Auto-fill CRNs into the Add Classes Worksheet of Add/Drop interface</label>
         </div>
         <br />
-        <div id="has-non-web-enabled" style="display: none; margin-bottom: 8px; border: 1px solid orange; background-color: yellow; color: black; padding: 4px; text-align: justify; border-radius: 2px">
-            You have some non-web-enabled sections in the wishlist. These sections cannot be registered through web add/drop system. <b>Auto-fill function will not applied to non-web-enabled sections.</b>
+        <div id="has-non-web-enabled"
+            style="display: none; margin-bottom: 8px; border: 1px solid orange; background-color: yellow; color: black; padding: 4px; text-align: justify; border-radius: 2px">
+            You have some non-web-enabled sections in the wishlist. These sections cannot be registered through web
+            add/drop system. <b>Auto-fill function will not applied to non-web-enabled sections.</b>
         </div>
+        <br />
+        <div style="margin-left: 12px;"
+            title="When this is turned on, Your timetable will NOT BE placed in the preview.">
+            <div class="mdc-switch" id="display-switch-container">
+                <div class="mdc-switch__track"></div>
+                <div class="mdc-switch__thumb-underlay">
+                    <div class="mdc-switch__thumb"></div>
+                    <input type="checkbox" id="display-switch" class="mdc-switch__native-control" role="switch"
+                        aria-checked="false">
+                </div>
+            </div>
+            <label for="display-switch" style="margin-left: 12px;">
+                Do not display timetable in Schedule Preview</label>
+        </div>
+        <br />
         <button class="mdc-button mdc-button--outlined" id="empty-button">
             <div class="mdc-button__ripple"></div>
             <i class="material-icons mdc-button__icon" aria-hidden="true">clear</i>
@@ -275,6 +303,11 @@
             <div class="mdc-button__ripple"></div>
             <i class="material-icons mdc-button__icon" aria-hidden="true">delete</i>
             <span class="mdc-button__label">Delete Selected</span>
+        </button>
+        <button class="mdc-button mdc-button--outlined" id="preview-button">
+            <div class="mdc-button__ripple"></div>
+            <i class="material-icons mdc-button__icon" aria-hidden="true">edit_calendar</i>
+            <span class="mdc-button__label">Schedule Preview</span>
         </button>
         <ul class="mdc-list mdc-list--two-line" id="crn-list"></ul>
     </div>
@@ -291,7 +324,8 @@
     </div>
     <div class="mdc-dialog" id="section-details-dialog">
         <div class="mdc-dialog__container">
-            <div class="mdc-dialog__surface" role="alertdialog" aria-modal="true" aria-labelledby="section-details-dialog-title" aria-describedby="section-details-dialog-content">
+            <div class="mdc-dialog__surface" role="alertdialog" aria-modal="true"
+                aria-labelledby="section-details-dialog-title" aria-describedby="section-details-dialog-content">
                 <h2 class="mdc-dialog__title" id="section-details-dialog-title">Section Details</h2>
                 <div class="mdc-dialog__content" id="section-details-dialog-content">
                     <div class="mdc-data-table">
@@ -299,8 +333,10 @@
                             <table class="mdc-data-table__table" id="section-details-table">
                                 <thead>
                                     <tr class="mdc-data-table__header-row">
-                                        <th class="mdc-data-table__header-cell" role="columnheader" scope="col">Name</th>
-                                        <th class="mdc-data-table__header-cell" role="columnheader" scope="col">Value</th>
+                                        <th class="mdc-data-table__header-cell" role="columnheader" scope="col">Name
+                                        </th>
+                                        <th class="mdc-data-table__header-cell" role="columnheader" scope="col">Value
+                                        </th>
                                     </tr>
                                 </thead>
                                 <tbody class="mdc-data-table__content">
@@ -328,7 +364,8 @@
                     <input type="checkbox" class="mdc-checkbox__native-control" />
                     <div class="mdc-checkbox__background">
                         <svg class="mdc-checkbox__checkmark" viewBox="0 0 24 24">
-                            <path class="mdc-checkbox__checkmark-path" fill="none" d="M1.73,12.91 8.1,19.28 22.79,4.59" />
+                            <path class="mdc-checkbox__checkmark-path" fill="none"
+                                d="M1.73,12.91 8.1,19.28 22.79,4.59" />
                         </svg>
                         <div class="mdc-checkbox__mixedmark"></div>
                     </div>

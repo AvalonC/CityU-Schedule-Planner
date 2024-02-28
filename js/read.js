@@ -1,6 +1,6 @@
 const DAYS = " MTWRFS", FULL_REGEX = /.*f.*u.*l.*l.*/i, NUM_FILTER = /[^\d]/g,
     START_DATE = "2024-01-01 08:30:00",
-    END_DATE = "2024-01-31 23:30:00",
+    END_DATE = "2024-03-31 23:30:00",
     LOC_MAP = {
         "Lau Ming Wai Academic Building": "LAU",
         "Li Dak Sum Yip Yio Chin A Bldg": "LI",
@@ -139,6 +139,10 @@ function modifiedSectionPage() {
                                 avail: FULL_REGEX.test(ctd$.children().eq(6).text()) ? 0 : parseInt(ctd$.children().eq(6).text().replace(NUM_FILTER, "")),
                                 //记录总容量
                                 cap: parseInt(ctd$.children().eq(7).text().replace(NUM_FILTER, "")),
+                                //记录日期
+                                date: DAYS.indexOf(ctd$.children().eq(10).text()),
+                                //记录时间
+                                period: ctd$.children().eq(11).text().split(" - "),
                                 //记录waitlist容量
                                 waitlist: ctd$.children().eq(8).text().includes("N") ? false : (FULL_REGEX.test(ctd$.children().eq(8).text()) ? 0 : parseInt(ctd$.children().eq(8).text().replace(NUM_FILTER, ""))),
                                 //冲突状态为false
@@ -189,7 +193,7 @@ function modifiedSectionPage() {
                                                 if (j === null || j.time === null) continue;
                                                 //将课程中的时间提取出来，放入一个map
                                                 let times = j.time.map(t => new moment(t, "hh:mm a"));
-                                                //如果计划选择课程的时间在已有课程的时间周期中，或已有课程的时间周期在疾患选择课程的时间周期中
+                                                //如果计划选择课程的时间在已有课程的时间周期中，或已有课程的时间周期在选择课程的时间周期中
                                                 if (day === j.day && (ztime.some(m => m.isBetween(times[0], times[1], undefined, "[]")) || times.some(m => m.isBetween(ztime[0], ztime[1], undefined, "[]")))) {
                                                     //将flag设置为false
                                                     flag = false;
@@ -352,6 +356,10 @@ function addCRNToWishlist() {
                 course: `${params.get("subj")}${params.get("crse")}`,
                 section: ctd$.children().eq(1).text().trim(),
                 webenabled: true,
+                //add day
+                date: DAYS.indexOf(ctd$.children().eq(10).text()),
+                //add time
+                period: ctd$.children().eq(11).text().split(" - "),
                 avail: FULL_REGEX.test(ctd$.children().eq(6).text()) ? 0 : parseInt(ctd$.children().eq(6).text().replace(NUM_FILTER, "")),
                 cap: parseInt(ctd$.children().eq(7).text().replace(NUM_FILTER, "")),
                 waitlist: ctd$.children().eq(8).text().includes("N") ? false : (FULL_REGEX.test(ctd$.children().eq(8).text()) ? 0 : parseInt(ctd$.children().eq(8).text().replace(NUM_FILTER, ""))),
@@ -396,7 +404,6 @@ function addCRNToWishlist() {
     });
     return false;
 }
-
 function autoFillCRN() {
     //确认wishlist和autofill功能是否启动
     chrome.storage.local.get(["wishlist", "autofill"], ({ wishlist, autofill }) => {

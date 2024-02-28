@@ -3,16 +3,11 @@ const tabBar = new mdc.tabBar.MDCTabBar(document.querySelector(".mdc-tab-bar")),
     list = new mdc.list.MDCList(document.querySelector("#crn-list")),
     snackbar = new mdc.snackbar.MDCSnackbar(document.querySelector('.mdc-snackbar')),
     s_autofill = new mdc.switchControl.MDCSwitch(document.querySelector('#autofill-switch-container')),
+    s_display = new mdc.switchControl.MDCSwitch(document.querySelector('#display-switch-container')),
     d_details = new mdc.dialog.MDCDialog(document.querySelector("#section-details-dialog")),
-    START_DATE = "2024-01-01 08:30:00",
-    END_DATE = "2024-01-31 23:30:00",
     DAYS = ["", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
 snackbar.timeoutMs = 4000;
-
-if (!(moment().isBetween(START_DATE, END_DATE, undefined, "[]"))) {
-    $(".mdc-tab-bar").hide();
-}
 
 document.querySelectorAll(".mdc-button").forEach((v, i) => {
     mdc.ripple.MDCRipple.attachTo(v);
@@ -40,12 +35,23 @@ s_autofill.listen("change", () => {
     });
 });
 
-chrome.storage.local.get(["ttb", "wishlist", "autofill"], ({ ttb, wishlist, autofill }) => {
+s_display.listen("change", () => {
+    chrome.storage.local.set({ display: s_display.checked }, () => {
+        snackbar.labelText = "Schedule Preview setting changed.";
+        snackbar.open();
+    });
+}
+)
+
+chrome.storage.local.get(["ttb", "wishlist", "autofill", "display"], ({ ttb, wishlist, autofill, display }) => {
     s_autofill.checked = autofill || false;
+    s_display.checked = display || false;
 
     if (ttb != null) {
         let m1 = moment(ttb.meta[2], "MMM DD, YYYY h:mm a");
-        $("#meta-text").text(`${ttb.meta[0]}, ${ttb.meta[1]}, updated at ${m1.format("dddd, Do MMMM, YYYY HH:mm")}`);
+        $("#meta-text").append(`${ttb.meta[0]} <br/ >`);
+        $("#meta-text").append(`Semester: ${ttb.meta[1]} <br/ >`)
+        $("#meta-text").append(`updated at: ${m1.format("dddd, Do MMMM, YYYY HH:mm")}`)
         ttb.classes.forEach((i) => {
             i.times.forEach(j => {
                 if (j === null || j.time === null) {
@@ -91,8 +97,12 @@ chrome.storage.local.get(["ttb", "wishlist", "autofill"], ({ ttb, wishlist, auto
                 $(n.children[0]).find(".mdc-list-item__primary-text").text(`${crn}`);
                 $(n.children[0]).find(".mdc-list-item__secondary-text").append($("<span></span>").css("color", "red").text("Check Master Class Schedule for details."));
             } else {
-                const { course, section, webenabled, avail, cap, waitlist, conflict, updated } = status;
-                $(n.children[0]).find(".mdc-list-item__primary-text").text(`${crn} (${course} ${section})`);
+                const { course, section, webenabled, avail, date, period, cap, waitlist, conflict, updated } = status;
+                //Insert Course Section (CRN)
+                $(n.children[0]).find(".mdc-list-item__primary-text").text(`${course} ${section} (${crn}) | `);
+                $(n.children[0]).find(".mdc-list-item__primary-text").append($("<span></span>").text(`${DAYS[date]}`));
+                $(n.children[0]).find(".mdc-list-item__secondary-text").append($("<span></span>").css("font-weight", "bold").text(`${period[0]} - ${period[1]}`));
+                $(n.children[0]).find(".mdc-list-item__secondary-text").append(` | `);
                 if (webenabled) {
                     let warn = false;
                     if (avail === 0) {
@@ -106,7 +116,7 @@ chrome.storage.local.get(["ttb", "wishlist", "autofill"], ({ ttb, wishlist, auto
                             $(n.children[0]).find(".mdc-list-item__secondary-text").append($("<span></span>").css("color", "darkorange").text(`Section is full, waitlist remaining ${waitlist}`));
                         }
                     } else {
-                        $(n.children[0]).find(".mdc-list-item__secondary-text").append($("<span></span>").css("color", "green").text(`Available: ${avail} / ${cap}`));
+                        $(n.children[0]).find(".mdc-list-item__secondary-text").append($("<span></span>").css("color", "royalblue").text(`Status: ${avail}/${cap}`));
                     }
                     $(n.children[0]).find(".mdc-list-item__secondary-text").append("; ");
                     if (conflict) {
@@ -123,7 +133,7 @@ chrome.storage.local.get(["ttb", "wishlist", "autofill"], ({ ttb, wishlist, auto
                     $(n.children[0]).find(".mdc-list-item__secondary-text").append($("<span></span>").css("color", "red").text(`Section not web-enabled`));
                 }
                 $(n.children[0]).find(".mdc-list-item__secondary-text").append("; ");
-                $(n.children[0]).find(".mdc-list-item__secondary-text").append(`Updated ${moment(updated).fromNow()}`);
+                $(n.children[0]).find(".mdc-list-item__secondary-text").append(`Recorded in ${moment(updated).fromNow()}<br/>`);
             }
             $(n.children[0]).attr("data-crn", crn).appendTo("#crn-list");
         });
@@ -150,6 +160,8 @@ $("#crn-list").on("change", ".mdc-checkbox__native-control", (e) => {
 $("#empty-button").click(() => emptyWishlist());
 
 $("#delete-button").click(() => deleteCRN());
+
+$("#preview-button").click(() => previewSchedule());
 
 $("#add-crn-button").click(() => {
     if (t_addCrn.valid && t_addCrn.value !== "") {
@@ -223,6 +235,29 @@ function emptyWishlist() {
     });
 }
 
+function previewSchedule() {
+    chrome.storage.local.get(["wishlist"], ({ wishlist }) => {
+        let sel = $("#crn-list .mdc-list-item.mdc-list-item--selected");
+        let schedule = [];
+        if (sel.length > 0) {
+            //用CRN从Wishlist中找到指定课程，并将其保存在schedule
+            sel.each(function (i, li) {
+                selCou = wishlist.find(selCou => selCou.crn === $(li).data("crn"));
+                schedule.push(selCou);
+            })
+            chrome.storage.local.set({ schedule: schedule });
+            window.open("schedule.html", target = "_blank");
+            window.resizeTo(900, 600);
+            return false;
+        }
+        else {
+            snackbar.labelText = "No CRN selected.";
+            snackbar.open();
+        }
+    }
+    )
+};
+
 function addCRNToWishlist(crn) {
     chrome.storage.local.get(["ttb", "wishlist"], ({ ttb, wishlist }) => {
         if (wishlist == null) {
@@ -262,3 +297,4 @@ function addCRNToWishlist(crn) {
     });
     return false;
 }
+
