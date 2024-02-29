@@ -4,7 +4,11 @@ _former: CityU Timetable Checker_
 
 &copy; 2020-2021 Kelvin Lee. All rights reserved.
 
-&copy; 2024 Guanzhang WANG. All rights reserved.
+&copy; 2024 Steve WANG. All rights reserved.
+
+## Version 0.5 (Released on 29/02/2024)
+- [New Feature] Schedule Preview is available now, you can schedule your timetable with the wishlist now.
+- UI Improvement.
 
 ## Version 0.1 (Released on 14/01/2024)
 
