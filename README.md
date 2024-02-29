@@ -4,15 +4,17 @@
 ![GitHub last commit](https://img.shields.io/github/last-commit/AvalonC/CityU-Schedule-Planner)
 ![GitHub Release Date](https://img.shields.io/github/release-date/AvalonC/CityU-Schedule-Planner)
 
-[中文版本](https://github.com/AvalonC/CityU-Schedule-Planner-CN)
-
 Timetable checker for CityU mates. It reads class information from AIMS and match against your timetable to see if time conflits with sessions occurs.
 
 **This extension is for CityU students only, and only works when you are using [AIMS](https://banweb.cityu.edu.hk/).**
 
+**这一插件仅供香港城市大学（CityU）学生使用，并仅在访问AIMS时生效。为防止增加与大学相关的不必要纠纷，此软件不会上架Chrome Store等类插件商店。**
+
+**特别警告软件卖家，此软件为免费软件并开源，请勿以此软件牟利。**
+
 ## Browser Support
 
-This is a Chromium-based-browser extension that can be installed on the latest desktop versions of Google Chrome, Vivaldi and Microsoft Edge. (Other Chromium-based browsers may be used, but we do not guarantee it works)
+This is a Chromium-based-browser extension that can be installed on the latest desktop versions of Google Chrome and Microsoft Edge. (Other Chromium-based browsers may be used, but we do not guarantee it works)
 
 ## How it works
 
@@ -28,20 +30,8 @@ This extension also provides a wishlist function for you to save the CRNs of the
 
 ## How to install
 
-### Windows
-
-1. Download the self-extracting archive file `timetable-checker.exe` under [Releases](https://github.com/lee011/timetable-checker/releases/latest).
-2. Run `timetable-checker.exe` to extract all files (by default, they will be extracted to `%USERPROFILE%\Documents\timetable-checker`).
-3. Go to the extension page of your browser (e.g. `chrome://extensions/`)
-4. Turn on Developer Mode.
-5. Click "Load unpacked".
-6. Choose the unzipped folder. (e.g. `%USERPROFILE%\Documents\timetable-checker`)
-7. The extension is installed and listed in the extensions page.
-
-### macOS or Linux
-
-1. Download the ZIP archive file `timetable-checker.zip` under [Releases](https://github.com/lee011/timetable-checker/releases/latest) (**Note: Do not** download `Source code (zip)` since doing that will make updating more complicated).
-2. Extract all files in `timetable-checker.zip`.
+1. Download the ZIP archive file under [Releases](https://github.com/lee011/timetable-checker/releases/latest) (**Note: Do not** download `Source code (zip)` since doing that will make updating more complicated).
+2. Extract all files
 3. Go to the extension page of your browser (e.g. `chrome://extensions/`)
 4. Turn on Developer Mode.
 5. Click "Load unpacked".
@@ -50,10 +40,10 @@ This extension also provides a wishlist function for you to save the CRNs of the
 
 ## How to update
 
-1. Download the updated archive file, same as [How to install](#how-to-install).
+1. Download the updated archive file.
 2. Extract the archive to the **same** location that you have installed the extension before. If prompted, choose to replace all existing files.
 3. Go to the extension page of your browser (e.g. `chrome://extensions/`)
-4. Find `CityU Timetable Checker` in the extensions list, and click the refresh button.
+4. Find `CityU Timetable Checker` in the extensions list, and click the reload button.
 5. The extension is updated.
 
 ## Status explaination

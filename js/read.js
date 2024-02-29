@@ -1,6 +1,4 @@
 const DAYS = " MTWRFS", FULL_REGEX = /.*f.*u.*l.*l.*/i, NUM_FILTER = /[^\d]/g,
-    START_DATE = "2024-01-01 08:30:00",
-    END_DATE = "2024-03-31 23:30:00",
     LOC_MAP = {
         "Lau Ming Wai Academic Building": "LAU",
         "Li Dak Sum Yip Yio Chin A Bldg": "LI",
@@ -8,8 +6,6 @@ const DAYS = " MTWRFS", FULL_REGEX = /.*f.*u.*l.*l.*/i, NUM_FILTER = /[^\d]/g,
         "Mong Man Wai Building": "MMW"
     };
 
-
-let inAddDropPeriod = moment().isBetween(START_DATE, END_DATE, undefined, "[]");
 /* 
 大循环判断，分别判断
 1.当前页面是否是学期规划详情页？（加载全部已选课程数据用以后续操作，因此这个操作应该最先进行。）
@@ -105,9 +101,8 @@ function modifiedSectionPage() {
                 let th1$ = $("<th></th>").text("Status");
                 //追加actions列头
                 let th2$ = $("<th></th>").text("Actions");
-                //判断是否在选课周期,在则显示列
-                if (inAddDropPeriod)
-                    th2$.attr("colspan", "2");
+                //增加列
+                th2$.attr("colspan", "2");
                 $(v).append([th1$, th2$]);
             }
             else {
@@ -174,8 +169,8 @@ function modifiedSectionPage() {
                                 if ($(v).children().eq(11).text().trim() === "") {
                                     //展示waitlist余额
                                     td1$.css("color", "darkorange").html("Section is full, waitlist available<br />Registrable");
-                                    //判断是否还在选课期，展示增加到wishlist操作
-                                    if ($(v).children().eq(0).text().trim() !== "" && inAddDropPeriod) {
+                                    //展示增加到wishlist操作
+                                    if ($(v).children().eq(0).text().trim() !== "") {
                                         td2$.append($("<a></a>").text("Add to Wishlist").attr({ "data-crn": $(v).children().eq(0).text(), "href": "#" }).click(addCRNToWishlist));
                                     }
                                 } else {
@@ -214,8 +209,8 @@ function modifiedSectionPage() {
                                     if (flag) {
                                         //提示此课时已满，waitlist可用，根据学期追加“无冲突”或者“非当前学期”的判断
                                         td1$.css("color", "darkorange").html(`Section is full, waitlist available<br />${selected === current ? "No conflicts" : "Incompatible terms"}`);
-                                        //存在CRN且在选课期内，给出添加到wishlist的操作
-                                        if ($(v).children().eq(0).text().trim() !== "" && inAddDropPeriod) {
+                                        //存在CRN，给出添加到wishlist的操作
+                                        if ($(v).children().eq(0).text().trim() !== "") {
                                             td2$.append($("<a></a>").text("Add to Wishlist").attr({ "data-crn": $(v).children().eq(0).text(), "data-waitlist": "true", "href": "#" }).click(addCRNToWishlist));
                                         }
                                         //存在上课时间且处于当学期，给出预览操作
@@ -225,8 +220,8 @@ function modifiedSectionPage() {
                                     } else {
                                         //提示此课时已满，waitlist可用，但存在课程冲突
                                         td1$.css("color", "red").html(`Section is full, waitlist available<br />Conflicts with ${crash}`);
-                                        //如果正在选课期，则显示增加到wishlist操作
-                                        if ($(v).children().eq(0).text().trim() !== "" && inAddDropPeriod) {
+                                        //显示增加到wishlist操作
+                                        if ($(v).children().eq(0).text().trim() !== "") {
                                             td2$.append($("<a></a>").text("Add to Wishlist").attr({ "data-crn": $(v).children().eq(0).text(), "data-crash": crash, "data-waitlist": "true", "href": "#" }).click(addCRNToWishlist));
                                         }
                                         //如果正在当前学期，给出预览的操作
@@ -242,8 +237,8 @@ function modifiedSectionPage() {
                             if ($(v).children().eq(11).text().trim() === "") {
                                 //显示可注册
                                 td1$.css("color", "green").text("Registrable");
-                                //存在CRN且在选课期内，显示添加到wishlist操作
-                                if ($(v).children().eq(0).text().trim() !== "" && inAddDropPeriod) {
+                                //存在CRN，显示添加到wishlist操作
+                                if ($(v).children().eq(0).text().trim() !== "") {
                                     td2$.append($("<a></a>").text("Add to Wishlist").attr({ "data-crn": $(v).children().eq(0).text(), "href": "#" }).click(addCRNToWishlist));
                                 }
                                 //存在上课时间
@@ -283,8 +278,8 @@ function modifiedSectionPage() {
                                 if (flag) {
                                     //判断学期，显示无冲突或错误的学期
                                     td1$.css("color", selected === current ? "green" : "darkorange").text(selected === current ? "No conflicts" : "Incompatible terms");
-                                    //存在CRN且在选课期内，给出添加到wishlist的操作
-                                    if ($(v).children().eq(0).text().trim() !== "" && inAddDropPeriod) {
+                                    //存在CRN，给出添加到wishlist的操作
+                                    if ($(v).children().eq(0).text().trim() !== "") {
                                         td2$.append($("<a></a>").text("Add to Wishlist").attr({ "data-crn": $(v).children().eq(0).text(), "href": "#" }).click(addCRNToWishlist));
                                     }
                                     //存在上课时间且处于当学期，给出预览操作
@@ -295,8 +290,8 @@ function modifiedSectionPage() {
                                 } else {
                                     //显示冲突课程
                                     td1$.css("color", "red").text(`Conflicts with ${crash}`);
-                                    //如果存在CRN且在选课期内，给出添加到wishlist的操作
-                                    if ($(v).children().eq(0).text().trim() !== "" && inAddDropPeriod) {
+                                    //如果存在CRN，给出添加到wishlist的操作
+                                    if ($(v).children().eq(0).text().trim() !== "") {
                                         td2$.append($("<a></a>").text("Add to Wishlist").attr({ "data-crn": $(v).children().eq(0).text(), "data-crash": crash, "href": "#" }).click(addCRNToWishlist));
                                     }
                                     //如果存在上课时间。给出预览操作
@@ -333,12 +328,7 @@ function modifiedSectionPage() {
                         td1$.css("color", "red").text("Section not web-enabled");
                     }
                 }
-                //如果在选课周期，则增加三个新操作列
-                if (inAddDropPeriod)
-                    $(v).append([td1$, td2$, td3$]);
-                //不在的时候增加状态和预览即可，增加到wishlist操作已经失去意义
-                else
-                    $(v).append([td1$, td3$]);
+                $(v).append([td1$, td2$, td3$]);
             }
         });
         //存储wishlist
