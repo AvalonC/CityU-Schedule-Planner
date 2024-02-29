@@ -30,7 +30,7 @@ This extension also provides a wishlist function for you to save the CRNs of the
 
 ## How to install
 
-1. Download the ZIP archive file under [Releases](https://github.com/lee011/timetable-checker/releases/latest) (**Note: Do not** download `Source code (zip)` since doing that will make updating more complicated).
+1. Download the ZIP archive file under [Releases](https://github.com/AvalonC/CityU-Schedule-Planner/releases/latest) (**Note: Do not** download `Source code (zip)` since doing that will make updating more complicated).
 2. Extract all files
 3. Go to the extension page of your browser (e.g. `chrome://extensions/`)
 4. Turn on Developer Mode.
@@ -43,7 +43,7 @@ This extension also provides a wishlist function for you to save the CRNs of the
 1. Download the updated archive file.
 2. Extract the archive to the **same** location that you have installed the extension before. If prompted, choose to replace all existing files.
 3. Go to the extension page of your browser (e.g. `chrome://extensions/`)
-4. Find `CityU Timetable Checker` in the extensions list, and click the reload button.
+4. Find `CityU Timetable Checker` in the extensions list, and click the "reload" button.
 5. The extension is updated.
 
 ## Status explaination
