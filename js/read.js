@@ -302,7 +302,7 @@ function modifiedSectionPage() {
                             }
                         }
                     }
-                    //如果背景不是网选粉，那么如果此行有16个子元素的话
+                    //如果背景不是网选粉，那么如果此行有17个子元素的话
                 } else if ($(v).children().length === 16) {
                     //如果有容量
                     if ($(v).children().eq(6).text().trim() !== "") {
